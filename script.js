@@ -183,7 +183,7 @@ async function listCourses() {
     let courses = [];
     let pageToken = null;
 
-    document.getElementById("loading").style.display = "block";
+    document.getElementById("loading").style.display = "flex";
     document.getElementById("course_grid").innerHTML = "";
     document.getElementById("content").innerText = "";
 
