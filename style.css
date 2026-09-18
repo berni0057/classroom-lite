@@ -116,18 +116,18 @@ body {
     content: "";
     position: absolute;
     inset: 0;
+    z-index: 0;
 
     background: linear-gradient(
         135deg,
-        rgba(26, 115, 232, 0.88),
-        rgba(66, 133, 244, 0.58)
+        rgba(26, 115, 232, 0.25),
+        rgba(66, 133, 244, 0.10)
     );
 }
 
 .course-banner.pattern-1,
 .class-banner.pattern-1 {
-    background:
-        linear-gradient(135deg, #1967d2, #4285f4);
+    background: linear-gradient(135deg, #1967d2, #4285f4);
 }
 
 .course-banner.pattern-1::before,
@@ -141,15 +141,13 @@ body {
     background:
         radial-gradient(
             circle at 20% 30%,
-            rgba(255, 255, 255, 0.42) 0%,
-            rgba(255, 255, 255, 0.24) 18%,
-            rgba(255, 255, 255, 0) 40%
+            rgba(255, 255, 255, 0.30) 0 16%,
+            transparent 16.5%
         ),
         radial-gradient(
             circle at 80% 70%,
-            rgba(255, 255, 255, 0.30) 0%,
-            rgba(255, 255, 255, 0.16) 20%,
-            rgba(255, 255, 255, 0) 42%
+            rgba(255, 255, 255, 0.22) 0 19%,
+            transparent 19.5%
         );
 }
 
@@ -162,8 +160,7 @@ body {
 
 .course-banner.pattern-3,
 .class-banner.pattern-3 {
-    background:
-        linear-gradient(135deg, #9334e6, #a142f4);
+    background: linear-gradient(135deg, #9334e6, #a142f4);
 }
 
 .course-banner.pattern-3::before,
@@ -177,15 +174,13 @@ body {
     background:
         radial-gradient(
             circle at 30% 40%,
-            rgba(255, 255, 255, 0.38) 0%,
-            rgba(255, 255, 255, 0.22) 20%,
-            rgba(255, 255, 255, 0) 43%
+            rgba(255, 255, 255, 0.28) 0 18%,
+            transparent 18.5%
         ),
         radial-gradient(
             circle at 75% 65%,
-            rgba(255, 255, 255, 0.30) 0%,
-            rgba(255, 255, 255, 0.16) 23%,
-            rgba(255, 255, 255, 0) 45%
+            rgba(255, 255, 255, 0.22) 0 21%,
+            transparent 21.5%
         );
 }
 
