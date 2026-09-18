@@ -125,9 +125,19 @@ body {
 .course-banner.pattern-1,
 .class-banner.pattern-1 {
     background:
-    radial-gradient(circle at 20% 30%, rgba(255,255,255,.3) 0 12%, transparent 13%),
-    radial-gradient(circle at 80% 70%, rgba(255,255,255,.2) 0 18%, transparent 19%),
-    linear-gradient(135deg, #1967d2, #4285f4);
+        radial-gradient(
+            circle at 20% 30%,
+            rgba(255, 255, 255, 0.18) 0%,
+            rgba(255, 255, 255, 0.08) 18%,
+            transparent 38%
+        ),
+        radial-gradient(
+            circle at 82% 72%,
+            rgba(255, 255, 255, 0.14) 0%,
+            rgba(255, 255, 255, 0.06) 20%,
+            transparent 42%
+        ),
+        linear-gradient(135deg, #1967d2, #4285f4);
 }
 
 .course-banner.pattern-2,
@@ -140,9 +150,19 @@ body {
 .course-banner.pattern-3,
 .class-banner.pattern-3 {
     background:
-    radial-gradient(circle at 30% 40%, rgba(255,255,255,.2) 0 20%, transparent 21%),
-    radial-gradient(circle at 75% 65%, rgba(255,255,255,.16) 0 25%, transparent 26%),
-    linear-gradient(135deg, #9334e6, #a142f4);
+        radial-gradient(
+            circle at 28% 38%,
+            rgba(255, 255, 255, 0.16) 0%,
+            rgba(255, 255, 255, 0.07) 22%,
+            transparent 44%
+        ),
+        radial-gradient(
+            circle at 76% 68%,
+            rgba(255, 255, 255, 0.14) 0%,
+            rgba(255, 255, 255, 0.06) 24%,
+            transparent 46%
+        ),
+        linear-gradient(135deg, #9334e6, #a142f4);
 }
 
 .course-banner.pattern-4,
