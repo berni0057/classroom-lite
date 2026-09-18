@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Classe · Classroom Lite</title>
+
+    <link rel="icon" type="image/png"
+        href="https://ssl.gstatic.com/classroom/favicon_purple.png">
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="class-page">
+
+    <header class="topbar">
+        <div class="topbar-left">
+            <a href="index.html" class="back-button">
+                ←
+            </a>
+
+            <div>
+                <h1>Classroom Lite</h1>
+                <p>La meva classe</p>
+            </div>
+        </div>
+    </header>
+
+    <main class="class-container">
+
+        <a id="class-banner"
+           class="class-banner"
+           href="#">
+
+            <div class="class-banner-content">
+                <div id="class-name" class="class-name"></div>
+                <div id="class-section" class="class-section"></div>
+            </div>
+
+        </a>
+
+        <section class="class-content">
+            <!-- Aquí afegirem les tasques, materials, anuncis... -->
+        </section>
+
+    </main>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+
+        const name = params.get("name") || "Sense nom";
+        const section = params.get("section") || "";
+        const pattern = params.get("pattern") || "1";
+
+        document.title = `${name} · Classroom Lite`;
+
+        document.getElementById("class-name").textContent = name;
+
+        const sectionElement = document.getElementById("class-section");
+
+        if (section) {
+            sectionElement.textContent = section;
+        } else {
+            sectionElement.style.display = "none";
+        }
+
+        const banner = document.getElementById("class-banner");
+        banner.classList.add(`pattern-${pattern}`);
+    </script>
+
+</body>
+</html>

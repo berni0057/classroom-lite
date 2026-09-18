@@ -235,9 +235,18 @@ async function listCourses() {
     courses.forEach((course, index) => {
         const card = document.createElement("a");
         card.className = "course-card";
-        card.href = course.alternateLink || "#";
-        card.target = "_blank";
-        card.rel = "noopener noreferrer";
+        const params = new URLSearchParams();
+
+        params.set("id", course.id);
+        params.set("name", course.name || "Sense nom");
+
+        if (course.section) {
+            params.set("section", course.section);
+        }
+
+        params.set("pattern", pattern);
+
+        card.href = `class.html?${params.toString()}`;
 
         const pattern = (index % 4) + 1;
 

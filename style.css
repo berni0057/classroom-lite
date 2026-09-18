@@ -385,3 +385,95 @@ body.auth-required .auth-panel {
     min-height: calc(100vh - 72px);
     padding: 20px;
 }
+
+
+/* PÀGINA DE CLASSE */
+.class-page {
+    min-height: 100vh;
+    background: #f8f9fa;
+}
+
+.topbar-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.back-button {
+    width: 42px;
+    height: 42px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    text-decoration: none;
+    color: #5f6368;
+
+    font-size: 24px;
+
+    transition: background 0.2s ease;
+}
+
+.back-button:hover {
+    background: #f1f3f4;
+}
+
+.class-container {
+    width: min(1200px, calc(100% - 40px));
+    margin: 32px auto 60px;
+}
+
+.class-banner {
+    display: block;
+
+    min-height: 260px;
+
+    border-radius: 18px;
+
+    text-decoration: none;
+    color: white;
+
+    position: relative;
+    overflow: hidden;
+
+    box-shadow: 0 4px 12px rgba(60, 64, 67, 0.15);
+}
+
+.class-banner-content {
+    position: absolute;
+    left: 32px;
+    bottom: 30px;
+    right: 32px;
+}
+
+.class-name {
+    font-size: 36px;
+    font-weight: 600;
+    line-height: 1.15;
+
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
+}
+
+.class-section {
+    margin-top: 10px;
+
+    font-size: 18px;
+    font-weight: 400;
+
+    opacity: 0.95;
+}
+
+.class-content {
+    min-height: 600px;
+
+    margin-top: 24px;
+
+    background: white;
+
+    border-radius: 18px;
+
+    box-shadow: 0 2px 8px rgba(60, 64, 67, 0.12);
+}
