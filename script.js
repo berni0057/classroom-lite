@@ -41,10 +41,6 @@ function gisLoaded() {
 function handleTokenError(error) {
     console.error("Google authorization error:", error);
 
-    if (silentAuthInProgress) {
-        return;
-    }
-
     showAuthorizationRequired(
         "No s’ha pogut iniciar sessió. Prem el botó per connectar amb Google."
     );
@@ -235,6 +231,9 @@ async function listCourses() {
     courses.forEach((course, index) => {
         const card = document.createElement("a");
         card.className = "course-card";
+
+        const pattern = (index % 4) + 1;
+
         const params = new URLSearchParams();
 
         params.set("id", course.id);
@@ -247,8 +246,6 @@ async function listCourses() {
         params.set("pattern", pattern);
 
         card.href = `class.html?${params.toString()}`;
-
-        const pattern = (index % 4) + 1;
 
         card.innerHTML = `
     <div class="course-banner pattern-${pattern}">
