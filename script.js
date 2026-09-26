@@ -1,4 +1,5 @@
-const CLIENT_ID = "50125941263-iva3amlqcbc6vovosn8dr00pdt6jfs8h.apps.googleusercontent.com";
+const CLIENT_ID =
+    "50125941263-iva3amlqcbc6vovosn8dr00pdt6jfs8h.apps.googleusercontent.com";
 const API_KEY = "AIzaSyDCmYzQ68Cz7f99JCplJEFc902maHZAQxs";
 
 const DISCOVERY_DOC = "https://classroom.googleapis.com/$discovery/rest";
@@ -11,6 +12,21 @@ let tokenClient;
 let gapiInited = false;
 let gisInited = false;
 const HAS_VISITED_KEY = "classroomLiteHasVisited";
+
+const COURSES_STORAGE_KEY = "classroomLiteCourses";
+const APPEARANCE_STORAGE_KEY = "classroomLiteAppearance";
+
+const DEFAULT_APPEARANCE = {
+    color: "blue",
+    pattern: "none",
+};
+
+const ALLOWED_COLORS = ["blue", "green", "purple", "red"];
+
+const ALLOWED_PATTERNS = ["none", "circles", "stripes", "diagonal"];
+
+let settingsCourseId = null;
+let settingsWrapper = null;
 
 document.getElementById("signout_button").style.visibility = "hidden";
 
@@ -31,7 +47,7 @@ function gisLoaded() {
     tokenClient = google.accounts.oauth2.initTokenClient({
         client_id: CLIENT_ID,
         scope: SCOPES,
-        callback: '',
+        callback: "",
         error_callback: handleTokenError,
     });
     gisInited = true;
@@ -42,7 +58,7 @@ function handleTokenError(error) {
     console.error("Google authorization error:", error);
 
     showAuthorizationRequired(
-        "No s’ha pogut iniciar sessió. Prem el botó per connectar amb Google."
+        "No s’ha pogut iniciar sessió. Prem el botó per connectar amb Google.",
     );
 }
 
@@ -84,7 +100,7 @@ function trySilentAuth() {
         finished = true;
 
         showAuthorizationRequired(
-            "No s’ha pogut iniciar sessió automàticament. Pot ser que els permisos hagin canviat. Prem el botó per tornar a connectar."
+            "No s’ha pogut iniciar sessió automàticament. Pot ser que els permisos hagin canviat. Prem el botó per tornar a connectar.",
         );
     };
 
@@ -103,11 +119,10 @@ function trySilentAuth() {
         }
 
         // Comprovar que el token té TOTS els scopes necessaris.
-        const hasAllScopes =
-            google.accounts.oauth2.hasGrantedAllScopes(
-                resp,
-                ...SCOPES.split(" ")
-            );
+        const hasAllScopes = google.accounts.oauth2.hasGrantedAllScopes(
+            resp,
+            ...SCOPES.split(" "),
+        );
 
         if (!hasAllScopes) {
             clearTimeout(timeout);
@@ -124,7 +139,7 @@ function trySilentAuth() {
     };
 
     tokenClient.requestAccessToken({
-        prompt: "none"
+        prompt: "none",
     });
 }
 
@@ -170,12 +185,212 @@ function handleSignoutClick() {
     document.getElementById("signout_button").style.visibility = "hidden";
 
     showAuthorizationRequired(
-        "Has tancat la sessió de Classroom Lite. Prem el botó per tornar a entrar."
+        "Has tancat la sessió de Classroom Lite. Prem el botó per tornar a entrar.",
+    );
+
+    document.body.classList.remove("edit-mode");
+
+    document.getElementById(
+        "edit_button"
+    ).style.visibility = "hidden";
+}
+
+function readStorageObject(key) {
+    try {
+        const raw = localStorage.getItem(key);
+
+        if (!raw) {
+            return {};
+        }
+
+        const parsed = JSON.parse(raw);
+
+        return parsed && typeof parsed === "object" ? parsed : {};
+    } catch (error) {
+        console.error(`Error llegint localStorage (${key}):`, error);
+        return {};
+    }
+}
+
+function writeStorageObject(key, value) {
+    try {
+        localStorage.setItem(key, JSON.stringify(value));
+    } catch (error) {
+        console.error(`Error escrivint localStorage (${key}):`, error);
+    }
+}
+
+function saveCoursesToStorage(courses) {
+    const storedCourses = readStorageObject(COURSES_STORAGE_KEY);
+
+    courses.forEach((course) => {
+        storedCourses[course.id] = {
+            name: course.name || "Sense nom",
+            section: course.section || "",
+        };
+    });
+
+    writeStorageObject(COURSES_STORAGE_KEY, storedCourses);
+}
+
+function getCourseAppearance(courseId) {
+    const allAppearances = readStorageObject(APPEARANCE_STORAGE_KEY);
+
+    const saved = allAppearances[courseId] || {};
+
+    const color = ALLOWED_COLORS.includes(saved.color)
+        ? saved.color
+        : DEFAULT_APPEARANCE.color;
+
+    const pattern = ALLOWED_PATTERNS.includes(saved.pattern)
+        ? saved.pattern
+        : DEFAULT_APPEARANCE.pattern;
+
+    return {
+        color,
+        pattern,
+    };
+}
+
+function saveCourseAppearance(courseId, changes) {
+    const allAppearances = readStorageObject(APPEARANCE_STORAGE_KEY);
+
+    const current = getCourseAppearance(courseId);
+
+    allAppearances[courseId] = {
+        ...current,
+        ...changes,
+    };
+
+    writeStorageObject(APPEARANCE_STORAGE_KEY, allAppearances);
+}
+
+function applyAppearanceToBanner(banner, courseId) {
+    const appearance = getCourseAppearance(courseId);
+
+    banner.classList.remove(
+        "color-blue",
+        "color-green",
+        "color-purple",
+        "color-red",
+        "pattern-none",
+        "pattern-circles",
+        "pattern-stripes",
+        "pattern-diagonal",
+    );
+
+    banner.classList.add(
+        `color-${appearance.color}`,
+        `pattern-${appearance.pattern}`,
     );
 }
 
+function updateSettingsSelection() {
+    if (!settingsCourseId) {
+        return;
+    }
+
+    const appearance = getCourseAppearance(settingsCourseId);
+
+    document.querySelectorAll(".color-option").forEach((button) => {
+        button.classList.toggle(
+            "selected",
+            button.dataset.color === appearance.color,
+        );
+    });
+
+    document.querySelectorAll(".pattern-option").forEach((button) => {
+        button.classList.toggle(
+            "selected",
+            button.dataset.pattern === appearance.pattern,
+        );
+    });
+}
+
+function openCourseSettings(courseId, wrapper) {
+    settingsCourseId = courseId;
+    settingsWrapper = wrapper;
+
+    updateSettingsSelection();
+
+    document.getElementById("settings-modal").hidden = false;
+}
+
+function closeCourseSettings() {
+    document.getElementById("settings-modal").hidden = true;
+
+    settingsCourseId = null;
+    settingsWrapper = null;
+}
+
+function updateCurrentCardAppearance() {
+    if (!settingsCourseId || !settingsWrapper) {
+        return;
+    }
+
+    const banner = settingsWrapper.querySelector(".course-banner");
+
+    if (banner) {
+        applyAppearanceToBanner(banner, settingsCourseId);
+    }
+}
+
+function toggleEditMode() {
+    const active = document.body.classList.toggle("edit-mode");
+
+    const button = document.getElementById("edit_button");
+
+    button.setAttribute("aria-pressed", String(active));
+
+    button.classList.toggle("active", active);
+}
+
+document
+    .getElementById("edit_button")
+    .addEventListener("click", toggleEditMode);
+
+document
+    .getElementById("settings-close")
+    .addEventListener("click", closeCourseSettings);
+
+document.getElementById("settings-modal").addEventListener("click", (event) => {
+    if (event.target === event.currentTarget) {
+        closeCourseSettings();
+    }
+});
+
+document.querySelectorAll(".color-option").forEach((button) => {
+    button.addEventListener("click", () => {
+        if (!settingsCourseId) {
+            return;
+        }
+
+        saveCourseAppearance(settingsCourseId, {
+            color: button.dataset.color,
+        });
+
+        updateSettingsSelection();
+        updateCurrentCardAppearance();
+    });
+});
+
+document.querySelectorAll(".pattern-option").forEach((button) => {
+    button.addEventListener("click", () => {
+        if (!settingsCourseId) {
+            return;
+        }
+
+        saveCourseAppearance(settingsCourseId, {
+            pattern: button.dataset.pattern,
+        });
+
+        updateSettingsSelection();
+        updateCurrentCardAppearance();
+    });
+});
+
 async function listCourses() {
-    document.body.classList.remove('auth-required');
+    document.body.classList.remove("auth-required");
     let courses = [];
     let pageToken = null;
 
@@ -197,27 +412,25 @@ async function listCourses() {
             pageToken = response.result.nextPageToken || null;
         } while (pageToken);
     } catch (err) {
-    console.error("Classroom API error:", err);
+        console.error("Classroom API error:", err);
 
-    document.getElementById("loading").style.display = "none";
+        document.getElementById("loading").style.display = "none";
 
-    const errorCode =
-        err?.status ||
-        err?.result?.error?.code ||
-        err?.result?.error?.status;
+        const errorCode =
+            err?.status || err?.result?.error?.code || err?.result?.error?.status;
 
-    if (errorCode === 401 || errorCode === 403) {
-        showAuthorizationRequired(
-            "Necessitem tornar a autoritzar l'accés a Classroom perquè els permisos de l'aplicació han canviat."
-        );
+        if (errorCode === 401 || errorCode === 403) {
+            showAuthorizationRequired(
+                "Necessitem tornar a autoritzar l'accés a Classroom perquè els permisos de l'aplicació han canviat.",
+            );
+            return;
+        }
+
+        document.getElementById("content").innerText =
+            err?.message || JSON.stringify(err);
+
         return;
     }
-
-    document.getElementById("content").innerText =
-        err?.message || JSON.stringify(err);
-
-    return;
-}
 
     document.getElementById("loading").style.display = "none";
 
@@ -226,45 +439,82 @@ async function listCourses() {
         return;
     }
 
+    document.getElementById("loading").style.display = "none";
+
+    saveCoursesToStorage(courses);
+
+    document.getElementById("edit_button").style.visibility = "visible";
+
     const grid = document.getElementById("course_grid");
 
-    courses.forEach((course, index) => {
+    courses.forEach((course) => {
+        const wrapper = document.createElement("div");
+
+        wrapper.className = "course-card-wrapper";
+
+        wrapper.dataset.courseId = course.id;
+
         const card = document.createElement("a");
+
         card.className = "course-card";
 
-        const pattern = (index % 4) + 1;
+        card.href = `class.html?id=${encodeURIComponent(course.id)}`;
 
-        const params = new URLSearchParams();
-
-        params.set("id", course.id);
-        params.set("name", course.name || "Sense nom");
-
-        if (course.section) {
-            params.set("section", course.section);
-        }
-
-        params.set("pattern", pattern);
-
-        card.href = `class.html?${params.toString()}`;
+        const appearance = getCourseAppearance(course.id);
 
         card.innerHTML = `
-    <div class="course-banner pattern-${pattern}">
-        <div class="course-title-on-banner">
-        <div class="course-title">
-            ${escapeHtml(course.name || "Sense nom")}
-        </div>
+            <div class="
+                course-banner
+                color-${appearance.color}
+                pattern-${appearance.pattern}
+            ">
+                <div class="course-title-on-banner">
 
-        ${course.section
-                ? `<div class="course-section">${escapeHtml(course.section)}</div>`
+                    <div class="course-title">
+                        ${escapeHtml(course.name || "Sense nom")}
+                    </div>
+
+                    ${course.section
+                ? `
+                                <div class="course-section">
+                                    ${escapeHtml(course.section)}
+                                </div>
+                            `
                 : ""
             }
-        </div>
-    </div>
 
-    <div class="course-body"></div>
-    `;
+                </div>
+            </div>
 
-        grid.appendChild(card);
+            <div class="course-body"></div>
+        `;
+
+        const settingsButton = document.createElement("button");
+
+        settingsButton.className = "course-settings";
+
+        settingsButton.type = "button";
+
+        settingsButton.title = "Personalitzar aquesta classe";
+
+        settingsButton.setAttribute(
+            "aria-label",
+            `Personalitzar ${course.name || "classe"}`,
+        );
+
+        settingsButton.textContent = "⚙";
+
+        settingsButton.addEventListener("click", (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+
+            openCourseSettings(course.id, wrapper);
+        });
+
+        wrapper.appendChild(card);
+        wrapper.appendChild(settingsButton);
+
+        grid.appendChild(wrapper);
     });
 }
 
@@ -275,12 +525,12 @@ function escapeHtml(text) {
 }
 
 function showAuthorizationRequired(message) {
-  document.getElementById('loading').style.display = 'none';
-  document.getElementById('course_grid').innerHTML = '';
+    document.getElementById("loading").style.display = "none";
+    document.getElementById("course_grid").innerHTML = "";
 
-  const content = document.getElementById('content');
+    const content = document.getElementById("content");
 
-  content.innerHTML = `
+    content.innerHTML = `
     <div class="auth-panel">
       <div class="auth-message">
         <h2>Cal connectar amb Google</h2>
@@ -299,18 +549,20 @@ function showAuthorizationRequired(message) {
         <span>Inicia la sessió amb Google</span>
       </button>
     </div>
-  `;
+    `;
 
-  document.getElementById('authorize_button').onclick = handleAuthClick;
+    document.getElementById("authorize_button").onclick = handleAuthClick;
 
-  document.getElementById('signout_button').style.visibility = 'hidden';
+    document.getElementById("signout_button").style.visibility = "hidden";
 
-  // Ja no necessitem el botó que hi havia fora del panell.
-  const oldAuthorizeButton = document.querySelector(
-    'body > #authorize_button'
-  );
+    document.body.classList.remove("edit-mode");
 
-  if (oldAuthorizeButton) {
-    oldAuthorizeButton.style.visibility = 'hidden';
-  }
+    document.getElementById("edit_button").style.visibility = "hidden";
+
+    // Ja no necessitem el botó que hi havia fora del panell.
+    const oldAuthorizeButton = document.querySelector("body > #authorize_button");
+
+    if (oldAuthorizeButton) {
+        oldAuthorizeButton.style.visibility = "hidden";
+    }
 }

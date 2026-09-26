@@ -39,7 +39,26 @@
         </div>
 
         <div class="actions">
-            <!-- aquí no hi posem res de moment -->
+
+            <button
+                id="edit_button"
+                class="icon-button"
+                type="button"
+                title="Editar classes"
+                aria-label="Editar classes"
+                aria-pressed="false"
+                style="visibility: hidden;"
+            >
+                ✎
+            </button>
+
+            <button
+                id="signout_button"
+                onclick="handleSignoutClick()"
+            >
+                Sign Out
+            </button>
+
         </div>
     </header>
 
@@ -58,30 +77,220 @@
             <!-- Aquí afegirem les tasques, materials, anuncis... -->
         </section>
 
+
     </main>
 
+    <div id="settings-modal" class="settings-modal" hidden>
+
+        <div
+            class="settings-dialog"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="settings-title"
+        >
+
+            <div class="settings-header">
+                <h2 id="settings-title">Personalitza la classe</h2>
+
+                <button
+                    id="settings-close"
+                    class="settings-close"
+                    type="button"
+                    aria-label="Tancar"
+                >
+                    ×
+                </button>
+            </div>
+
+            <section class="settings-section">
+                <h3>Color</h3>
+
+                <div class="settings-options color-options">
+
+                    <button class="color-option" data-color="blue">
+                        <span class="color-preview color-blue"></span>
+                        <span>Blau</span>
+                    </button>
+
+                    <button class="color-option" data-color="green">
+                        <span class="color-preview color-green"></span>
+                        <span>Verd</span>
+                    </button>
+
+                    <button class="color-option" data-color="purple">
+                        <span class="color-preview color-purple"></span>
+                        <span>Lila</span>
+                    </button>
+
+                    <button class="color-option" data-color="red">
+                        <span class="color-preview color-red"></span>
+                        <span>Vermell</span>
+                    </button>
+
+                </div>
+            </section>
+
+            <section class="settings-section">
+                <h3>Pattern</h3>
+
+                <div class="settings-options pattern-options">
+
+                    <button class="pattern-option" data-pattern="none">
+                        <span class="pattern-preview pattern-preview-none"></span>
+                        <span>Cap</span>
+                    </button>
+
+                    <button class="pattern-option" data-pattern="circles">
+                        <span class="pattern-preview pattern-preview-circles"></span>
+                        <span>Rodones</span>
+                    </button>
+
+                    <button class="pattern-option" data-pattern="stripes">
+                        <span class="pattern-preview pattern-preview-stripes"></span>
+                        <span>Franges</span>
+                    </button>
+
+                    <button class="pattern-option" data-pattern="diagonal">
+                        <span class="pattern-preview pattern-preview-diagonal"></span>
+                        <span>Diagonals</span>
+                    </button>
+
+                </div>
+            </section>
+
+        </div>
+    </div>
+
     <script>
-        const params = new URLSearchParams(window.location.search);
+        const params =
+            new URLSearchParams(window.location.search);
 
-        const name = params.get("name") || "Sense nom";
-        const section = params.get("section") || "";
-        const pattern = params.get("pattern") || "1";
+        const courseId = params.get("id");
 
-        document.title = `${name} · Classroom Lite`;
+        const COURSES_STORAGE_KEY =
+            "classroomLiteCourses";
 
-        document.getElementById("class-name").textContent = name;
-        document.getElementById("breadcrumb-class").textContent = name;
+        const APPEARANCE_STORAGE_KEY =
+            "classroomLiteAppearance";
 
-        const sectionElement = document.getElementById("class-section");
+        const DEFAULT_APPEARANCE = {
+            color: "blue",
+            pattern: "none",
+        };
 
-        if (section) {
-            sectionElement.textContent = section;
-        } else {
-            sectionElement.style.display = "none";
+        const ALLOWED_COLORS = [
+            "blue",
+            "green",
+            "purple",
+            "red",
+        ];
+
+        const ALLOWED_PATTERNS = [
+            "none",
+            "circles",
+            "stripes",
+            "diagonal",
+        ];
+
+        function readStorageObject(key) {
+            try {
+                const raw = localStorage.getItem(key);
+
+                if (!raw) {
+                    return {};
+                }
+
+                const parsed = JSON.parse(raw);
+
+                return parsed &&
+                    typeof parsed === "object"
+                    ? parsed
+                    : {};
+
+            } catch (error) {
+                console.error(
+                    "Error llegint localStorage:",
+                    error
+                );
+
+                return {};
+            }
         }
 
-        const banner = document.getElementById("class-banner");
-        banner.classList.add(`pattern-${pattern}`);
+        const courses =
+            readStorageObject(
+                COURSES_STORAGE_KEY
+            );
+
+        const appearances =
+            readStorageObject(
+                APPEARANCE_STORAGE_KEY
+            );
+
+        const course =
+            courses[courseId];
+
+        const name =
+            course?.name || "Classe";
+
+        const section =
+            course?.section || "";
+
+        const savedAppearance =
+            appearances[courseId] || {};
+
+        const color =
+            ALLOWED_COLORS.includes(
+                savedAppearance.color
+            )
+                ? savedAppearance.color
+                : DEFAULT_APPEARANCE.color;
+
+        const pattern =
+            ALLOWED_PATTERNS.includes(
+                savedAppearance.pattern
+            )
+                ? savedAppearance.pattern
+                : DEFAULT_APPEARANCE.pattern;
+
+        document.title =
+            `${name} · Classroom Lite`;
+
+        document.getElementById(
+            "class-name"
+        ).textContent = name;
+
+        const sectionElement =
+            document.getElementById(
+                "class-section"
+            );
+
+        if (section) {
+            sectionElement.textContent =
+                section;
+        } else {
+            sectionElement.style.display =
+                "none";
+        }
+
+        const banner =
+            document.getElementById(
+                "class-banner"
+            );
+
+        banner.classList.add(
+            `color-${color}`,
+            `pattern-${pattern}`
+        );
+
+        const breadcrumb =
+            document.getElementById(
+                "breadcrumb-class"
+            );
+
+        if (breadcrumb) {
+            breadcrumb.textContent = name;
+        }
     </script>
 
 </body>
