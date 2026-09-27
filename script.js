@@ -21,9 +21,42 @@ const DEFAULT_APPEARANCE = {
     pattern: "none",
 };
 
-const ALLOWED_COLORS = ["blue", "green", "purple", "red"];
+const VISIBLE_COLORS = [
+    "blue",
+    "green",
+    "purple",
+    "red",
+];
 
-const ALLOWED_PATTERNS = ["none", "circles", "stripes", "diagonal"];
+const ALLOWED_COLORS = [
+    "blue",
+    "green",
+    "purple",
+    "red",
+    "orange",
+    "yellow",
+    "cyan",
+    "teal",
+    "pink",
+    "indigo",
+    "light-blue",
+    "lime",
+    "amber",
+    "deep-orange",
+    "brown",
+    "blue-gray",
+];
+
+const ALLOWED_PATTERNS = [
+    "none",
+    "circles",
+    "hollow-circles",
+    "stripes",
+    "diagonal",
+    "waves",
+    "stars",
+    "horizontal-lines",
+];
 
 let settingsCourseId = null;
 let settingsWrapper = null;
@@ -273,10 +306,27 @@ function applyAppearanceToBanner(banner, courseId) {
         "color-green",
         "color-purple",
         "color-red",
+        "color-orange",
+        "color-yellow",
+        "color-cyan",
+        "color-teal",
+        "color-pink",
+        "color-indigo",
+        "color-light-blue",
+        "color-lime",
+        "color-amber",
+        "color-deep-orange",
+        "color-brown",
+        "color-blue-gray",
+
         "pattern-none",
         "pattern-circles",
+        "pattern-hollow-circles",
         "pattern-stripes",
         "pattern-diagonal",
+        "pattern-waves",
+        "pattern-stars",
+        "pattern-horizontal-lines"
     );
 
     banner.classList.add(
@@ -298,6 +348,28 @@ function updateSettingsSelection() {
             button.dataset.color === appearance.color,
         );
     });
+
+    const additionalColors =
+        document.getElementById("additional-colors");
+
+    const moreColorsButton =
+        document.getElementById("more-colors-button");
+
+    if (
+        additionalColors &&
+        moreColorsButton &&
+        !VISIBLE_COLORS.includes(appearance.color)
+    ) {
+        additionalColors.hidden = false;
+
+        moreColorsButton.setAttribute(
+            "aria-expanded",
+            "true"
+        );
+
+        moreColorsButton.textContent =
+            "− Menys colors";
+    }
 
     document.querySelectorAll(".pattern-option").forEach((button) => {
         button.classList.toggle(
@@ -388,6 +460,32 @@ document.querySelectorAll(".pattern-option").forEach((button) => {
         updateCurrentCardAppearance();
     });
 });
+
+document
+    .getElementById("more-colors-button")
+    .addEventListener("click", () => {
+
+        const additionalColors =
+            document.getElementById("additional-colors");
+
+        const button =
+            document.getElementById("more-colors-button");
+
+        const expanded =
+            !additionalColors.hidden;
+
+        additionalColors.hidden = expanded;
+
+        button.setAttribute(
+            "aria-expanded",
+            String(!expanded)
+        );
+
+        button.textContent =
+            expanded
+                ? "+ Més colors"
+                : "− Menys colors";
+    });
 
 async function listCourses() {
     document.body.classList.remove("auth-required");

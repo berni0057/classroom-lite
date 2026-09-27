@@ -141,41 +141,103 @@ body {
    ========================= */
 
 .color-blue {
-    background:
-        linear-gradient(
-            135deg,
-            #1967d2,
-            #4285f4
-        );
+    --color-start: #1967d2;
+    --color-end: #4285f4;
 }
 
 .color-green {
-    background:
-        linear-gradient(
-            135deg,
-            #188038,
-            #34a853
-        );
+    --color-start: #188038;
+    --color-end: #34a853;
 }
 
 .color-purple {
-    background:
-        linear-gradient(
-            135deg,
-            #9334e6,
-            #a142f4
-        );
+    --color-start: #9334e6;
+    --color-end: #a142f4;
 }
 
 .color-red {
+    --color-start: #c5221f;
+    --color-end: #ea4335;
+}
+
+.color-orange {
+    --color-start: #ef6c00;
+    --color-end: #fb8c00;
+}
+
+.color-yellow {
+    --color-start: #f9a825;
+    --color-end: #fdd835;
+}
+
+.color-cyan {
+    --color-start: #0097a7;
+    --color-end: #26c6da;
+}
+
+.color-teal {
+    --color-start: #00897b;
+    --color-end: #26a69a;
+}
+
+.color-pink {
+    --color-start: #d81b60;
+    --color-end: #ec407a;
+}
+
+.color-indigo {
+    --color-start: #3949ab;
+    --color-end: #5c6bc0;
+}
+
+.color-light-blue {
+    --color-start: #0288d1;
+    --color-end: #29b6f6;
+}
+
+.color-lime {
+    --color-start: #7cb342;
+    --color-end: #9ccc65;
+}
+
+.color-amber {
+    --color-start: #ff8f00;
+    --color-end: #ffb300;
+}
+
+.color-deep-orange {
+    --color-start: #d84315;
+    --color-end: #ff7043;
+}
+
+.color-brown {
+    --color-start: #6d4c41;
+    --color-end: #8d6e63;
+}
+
+.color-blue-gray {
+    --color-start: #455a64;
+    --color-end: #78909c;
+}
+
+.course-banner,
+.class-banner {
     background:
         linear-gradient(
             135deg,
-            #c5221f,
-            #ea4335
+            var(--color-start, #1967d2),
+            var(--color-end, #4285f4)
         );
 }
 
+.color-preview {
+    background:
+        linear-gradient(
+            135deg,
+            var(--color-start, #1967d2),
+            var(--color-end, #4285f4)
+        );
+}
 
 /* =========================
    PATTERN NONE
@@ -237,6 +299,52 @@ body {
             rgba(255, 255, 255, 0.08)
             50% 75%,
             transparent 75%
+        );
+}
+
+.pattern-hollow-circles::before {
+    background:
+        radial-gradient(
+            circle at 22% 30%,
+            transparent 0 10%,
+            rgba(255, 255, 255, 0.28) 10.5% 12%,
+            transparent 12.5%
+        ),
+        radial-gradient(
+            circle at 78% 70%,
+            transparent 0 13%,
+            rgba(255, 255, 255, 0.22) 13.5% 15%,
+            transparent 15.5%
+        );
+}
+
+.pattern-waves::before {
+    background:
+        repeating-radial-gradient(
+            ellipse at 50% 0%,
+            transparent 0 10px,
+            rgba(255, 255, 255, 0.15) 10px 12px,
+            transparent 12px 24px
+        );
+
+    background-size: 90px 45px;
+}
+
+.pattern-stars::before {
+    background-image:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='90' height='90' viewBox='0 0 90 90'%3E%3Cg fill='white' fill-opacity='.20'%3E%3Cpath d='M20 8 L24 16 L32 20 L24 24 L20 32 L16 24 L8 20 L16 16 Z'/%3E%3Cpath d='M68 48 L72 56 L80 60 L72 64 L68 72 L64 64 L56 60 L64 56 Z'/%3E%3Cpath d='M48 25 L51 31 L57 34 L51 37 L48 44 L45 37 L39 34 L45 31 Z'/%3E%3C/g%3E%3C/svg%3E");
+
+    background-size: 90px 90px;
+    background-repeat: repeat;
+}
+
+.pattern-horizontal-lines::before {
+    background:
+        repeating-linear-gradient(
+            to bottom,
+            transparent 0 12px,
+            rgba(255, 255, 255, 0.16) 12px 14px,
+            transparent 14px 26px
         );
 }
 
@@ -901,6 +1009,48 @@ body.edit-mode
             rgba(255,255,255,.09)
             50% 75%,
             transparent 75%
+        ),
+        #4285f4;
+}
+
+.pattern-preview-hollow-circles {
+    background:
+        radial-gradient(
+            circle at 25% 35%,
+            transparent 0 19%,
+            rgba(255,255,255,.45) 20% 23%,
+            transparent 24%
+        ),
+        #4285f4;
+}
+
+.pattern-preview-waves {
+    background:
+        repeating-radial-gradient(
+            ellipse at 50% 0,
+            transparent 0 5px,
+            rgba(255,255,255,.22) 5px 7px,
+            transparent 7px 13px
+        );
+    background-size: 42px 21px;
+    background-color: #4285f4;
+}
+
+.pattern-preview-stars {
+    background-image:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='50' height='50' viewBox='0 0 50 50'%3E%3Cg fill='white' fill-opacity='.28'%3E%3Cpath d='M12 4 L14 9 L19 12 L14 15 L12 20 L10 15 L5 12 L10 9 Z'/%3E%3Cpath d='M38 27 L40 32 L45 35 L40 38 L38 43 L36 38 L31 35 L36 32 Z'/%3E%3C/g%3E%3C/svg%3E");
+
+    background-size: 50px 50px;
+    background-color: #4285f4;
+}
+
+.pattern-preview-horizontal-lines {
+    background:
+        repeating-linear-gradient(
+            to bottom,
+            transparent 0 5px,
+            rgba(255,255,255,.22) 5px 7px,
+            transparent 7px 12px
         ),
         #4285f4;
 }

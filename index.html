@@ -1,150 +1,216 @@
 <!DOCTYPE html>
 <html>
-  <head>
+
+<head>
     <title>Classroom Lite</title>
     <link rel="icon" type="image/png" href="https://ssl.gstatic.com/classroom/favicon_purple.png">
     <link rel="stylesheet" href="style.css">
-  </head>
-  <body>
+</head>
+
+<body>
     <header class="topbar">
-      <div class="brand">
-        <div class="brand-icon">
-          <img
-            src="https://ssl.gstatic.com/classroom/favicon_purple.png"
-            alt="Classroom"
-          >
+        <div class="brand">
+            <div class="brand-icon">
+                <img src="https://ssl.gstatic.com/classroom/favicon_purple.png" alt="Classroom">
+            </div>
+            <div class="brand-copy">
+                <div class="brand-title">Classroom Lite</div>
+
+                <nav class="breadcrumb" aria-label="Navegació">
+                    <span class="breadcrumb-current">Les meves classes</span>
+                </nav>
+            </div>
         </div>
-        <div class="brand-copy">
-            <div class="brand-title">Classroom Lite</div>
 
-            <nav class="breadcrumb" aria-label="Navegació">
-                <span class="breadcrumb-current">Les meves classes</span>
-            </nav>
+        <div class="actions">
+
+            <button id="edit_button" class="icon-button" type="button" title="Editar classes"
+                aria-label="Editar classes" aria-pressed="false" style="visibility: hidden;">
+                ✎
+            </button>
+
+            <button id="signout_button" onclick="handleSignoutClick()">
+                Sign Out
+            </button>
+
         </div>
-      </div>
-
-      <div class="actions">
-
-        <button
-            id="edit_button"
-            class="icon-button"
-            type="button"
-            title="Editar classes"
-            aria-label="Editar classes"
-            aria-pressed="false"
-            style="visibility: hidden;"
-        >
-            ✎
-        </button>
-
-        <button
-            id="signout_button"
-            onclick="handleSignoutClick()"
-        >
-            Sign Out
-        </button>
-
-    </div>
     </header>
 
     <main class="container">
-      <div id="loading" class="loading" aria-label="Carregant">
-        <div class="loading-spinner">
-          <img
-            src="https://upload.wikimedia.org/wikipedia/commons/1/19/Google_Classroom_Logo.svg"
-            alt="Classroom"
-          >
+        <div id="loading" class="loading" aria-label="Carregant">
+            <div class="loading-spinner">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/1/19/Google_Classroom_Logo.svg"
+                    alt="Classroom">
+            </div>
         </div>
-      </div>
 
-      <section id="course_grid" class="course-grid"></section>
+        <section id="course_grid" class="course-grid"></section>
 
-      <div id="content" class="status"></div>
+        <div id="content" class="status"></div>
     </main>
 
     <div id="settings-modal" class="settings-modal" hidden>
 
-      <div
-          class="settings-dialog"
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="settings-title"
-      >
+        <div class="settings-dialog" role="dialog" aria-modal="true" aria-labelledby="settings-title">
 
-          <div class="settings-header">
-              <h2 id="settings-title">Personalitza la classe</h2>
+            <div class="settings-header">
+                <h2 id="settings-title">Personalitza la classe</h2>
 
-              <button
-                  id="settings-close"
-                  class="settings-close"
-                  type="button"
-                  aria-label="Tancar"
-              >
-                  ×
-              </button>
-          </div>
+                <button id="settings-close" class="settings-close" type="button" aria-label="Tancar">
+                    ×
+                </button>
+            </div>
 
-          <section class="settings-section">
-              <h3>Color</h3>
+            <section class="settings-section">
+                <h3>Color</h3>
 
-              <div class="settings-options color-options">
+                <div class="settings-options color-options">
 
-                  <button class="color-option" data-color="blue">
-                      <span class="color-preview color-blue"></span>
-                      <span>Blau</span>
-                  </button>
+                    <button class="color-option" data-color="blue">
+                        <span class="color-preview color-blue"></span>
+                        <span>Blau</span>
+                    </button>
 
-                  <button class="color-option" data-color="green">
-                      <span class="color-preview color-green"></span>
-                      <span>Verd</span>
-                  </button>
+                    <button class="color-option" data-color="green">
+                        <span class="color-preview color-green"></span>
+                        <span>Verd</span>
+                    </button>
 
-                  <button class="color-option" data-color="purple">
-                      <span class="color-preview color-purple"></span>
-                      <span>Lila</span>
-                  </button>
+                    <button class="color-option" data-color="purple">
+                        <span class="color-preview color-purple"></span>
+                        <span>Lila</span>
+                    </button>
 
-                  <button class="color-option" data-color="red">
-                      <span class="color-preview color-red"></span>
-                      <span>Vermell</span>
-                  </button>
+                    <button class="color-option" data-color="red">
+                        <span class="color-preview color-red"></span>
+                        <span>Vermell</span>
+                    </button>
 
-              </div>
-          </section>
+                </div>
 
-          <section class="settings-section">
-              <h3>Pattern</h3>
+                <button id="more-colors-button" class="more-colors-button" type="button" aria-expanded="false">
+                    + Més colors
+                </button>
 
-              <div class="settings-options pattern-options">
+                <div id="additional-colors" class="settings-options color-options additional-color-options" hidden>
 
-                  <button class="pattern-option" data-pattern="none">
-                      <span class="pattern-preview pattern-preview-none"></span>
-                      <span>Cap</span>
-                  </button>
+                    <button class="color-option" data-color="orange">
+                        <span class="color-preview color-orange"></span>
+                        <span>Taronja</span>
+                    </button>
 
-                  <button class="pattern-option" data-pattern="circles">
-                      <span class="pattern-preview pattern-preview-circles"></span>
-                      <span>Rodones</span>
-                  </button>
+                    <button class="color-option" data-color="yellow">
+                        <span class="color-preview color-yellow"></span>
+                        <span>Groc</span>
+                    </button>
 
-                  <button class="pattern-option" data-pattern="stripes">
-                      <span class="pattern-preview pattern-preview-stripes"></span>
-                      <span>Franges</span>
-                  </button>
+                    <button class="color-option" data-color="cyan">
+                        <span class="color-preview color-cyan"></span>
+                        <span>Cian</span>
+                    </button>
 
-                  <button class="pattern-option" data-pattern="diagonal">
-                      <span class="pattern-preview pattern-preview-diagonal"></span>
-                      <span>Diagonals</span>
-                  </button>
+                    <button class="color-option" data-color="teal">
+                        <span class="color-preview color-teal"></span>
+                        <span>Turquesa</span>
+                    </button>
 
-              </div>
-          </section>
+                    <button class="color-option" data-color="pink">
+                        <span class="color-preview color-pink"></span>
+                        <span>Rosa</span>
+                    </button>
 
-      </div>
-  </div>
+                    <button class="color-option" data-color="indigo">
+                        <span class="color-preview color-indigo"></span>
+                        <span>Indi</span>
+                    </button>
+
+                    <button class="color-option" data-color="light-blue">
+                        <span class="color-preview color-light-blue"></span>
+                        <span>Blau clar</span>
+                    </button>
+
+                    <button class="color-option" data-color="lime">
+                        <span class="color-preview color-lime"></span>
+                        <span>Lima</span>
+                    </button>
+
+                    <button class="color-option" data-color="amber">
+                        <span class="color-preview color-amber"></span>
+                        <span>Ambre</span>
+                    </button>
+
+                    <button class="color-option" data-color="deep-orange">
+                        <span class="color-preview color-deep-orange"></span>
+                        <span>Taronja fosc</span>
+                    </button>
+
+                    <button class="color-option" data-color="brown">
+                        <span class="color-preview color-brown"></span>
+                        <span>Marró</span>
+                    </button>
+
+                    <button class="color-option" data-color="blue-gray">
+                        <span class="color-preview color-blue-gray"></span>
+                        <span>Gris blavós</span>
+                    </button>
+
+                </div>
+            </section>
+
+            <section class="settings-section">
+                <h3>Pattern</h3>
+
+                <div class="settings-options pattern-options">
+
+                    <button class="pattern-option" data-pattern="none">
+                        <span class="pattern-preview pattern-preview-none"></span>
+                        <span>Cap</span>
+                    </button>
+
+                    <button class="pattern-option" data-pattern="circles">
+                        <span class="pattern-preview pattern-preview-circles"></span>
+                        <span>Rodones</span>
+                    </button>
+
+                    <button class="pattern-option" data-pattern="hollow-circles">
+                        <span class="pattern-preview pattern-preview-hollow-circles"></span>
+                        <span>Cercles buits</span>
+                    </button>
+
+                    <button class="pattern-option" data-pattern="stripes">
+                        <span class="pattern-preview pattern-preview-stripes"></span>
+                        <span>Franges</span>
+                    </button>
+
+                    <button class="pattern-option" data-pattern="diagonal">
+                        <span class="pattern-preview pattern-preview-diagonal"></span>
+                        <span>Diagonals</span>
+                    </button>
+
+                    <button class="pattern-option" data-pattern="waves">
+                        <span class="pattern-preview pattern-preview-waves"></span>
+                        <span>Onades</span>
+                    </button>
+
+                    <button class="pattern-option" data-pattern="stars">
+                        <span class="pattern-preview pattern-preview-stars"></span>
+                        <span>Estrelles</span>
+                    </button>
+
+                    <button class="pattern-option" data-pattern="horizontal-lines">
+                        <span class="pattern-preview pattern-preview-horizontal-lines"></span>
+                        <span>Línies horitzontals</span>
+                    </button>
+
+                </div>
+            </section>
+
+        </div>
+    </div>
 
     <script src="script.js"></script>
     <script async defer src="https://apis.google.com/js/api.js" onload="gapiLoaded()"></script>
     <script async defer src="https://accounts.google.com/gsi/client" onload="gisLoaded()"></script>
-  </body>
+</body>
+
 </html>
