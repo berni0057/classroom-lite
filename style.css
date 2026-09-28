@@ -874,6 +874,10 @@ body.edit-mode
     gap: 10px;
 }
 
+.settings-options[hidden] {
+    display: none;
+}
+
 .color-option,
 .pattern-option {
     min-height: 72px;
