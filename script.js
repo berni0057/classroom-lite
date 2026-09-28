@@ -557,6 +557,11 @@ async function listCourses() {
         card.className = "course-card";
 
         card.href = `class.html?id=${encodeURIComponent(course.id)}`;
+        card.addEventListener("click", (event) => {
+            if (document.body.classList.contains("edit-mode")) {
+                event.preventDefault();
+            }
+        });
 
         const appearance = getCourseAppearance(course.id);
 
